@@ -41,11 +41,4 @@ contract("TradingFloor", async accounts => {
     }
   });
 
-  it("Deposit and withdraw the same NFT", async () => {
-    await nft.safeTransferFrom(accounts[0], tradingFloor.address, 2)
-    await nft.safeTransferFrom(accounts[0], tradingFloor.address, 4)
-    await nft.safeTransferFrom(accounts[0], tradingFloor.address, 3)
-    await tradingFloor.withdraw(2)
-  });
-
 });
