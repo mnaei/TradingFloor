@@ -37,13 +37,11 @@ contract TradingFloor is ERC20, IERC721Receiver {
     }
 
     function onERC721Received(
-        address _operator,
+        address,
         address _from,
         uint256 _tokenId,
-        bytes calldata _data
+        bytes calldata 
     ) external returns (bytes4) {
-        _operator;
-        _data;
         require(_msgSender() == address(NFT));
         NFTs.push(_tokenId);
         _mint(_from, ONE);
