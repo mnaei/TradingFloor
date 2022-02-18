@@ -1,4 +1,5 @@
 const TradingFloor = artifacts.require("TradingFloor");
+const TradingFloorFactory = artifacts.require("TradingFloorFactory");
 const NFT = artifacts.require("NFT");
 
 var tradingFloor
@@ -7,8 +8,15 @@ var nft
 contract("TradingFloor", async accounts => {
 
   before("Setup", async function () {
+
     nft = await NFT.new("VITNFT", "Vitality NFT")
-    tradingFloor = await TradingFloor.new("VIT", "Vitality", nft.address)
+    factory = await TradingFloorFactory.new()
+
+    await factory.createTradingFloor("VIT", "Vitality Floor", nft.address)
+    tradingFloorStruct = await factory.Floors(0)
+    tradingFloorAddress = tradingFloorStruct.floor
+    tradingFloor = await TradingFloor.at(tradingFloorAddress)
+
     for (let i = 0; i < 5; i++) {
       await nft.mint(accounts[0], i)
     }

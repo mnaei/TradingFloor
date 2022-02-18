@@ -1,0 +1,69 @@
+ <!DOCTYPE html>
+<html>
+<body>
+
+<button id="createTradingFloor">Create Trading Floor</button>
+<br>
+<input type="text" id="Token Name">
+<br>
+<input type="text" id="Token Symbol">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.1-rc.0/web3.min.js"></script>
+<script>
+
+    async function main() {
+
+        if (typeof window.ethereum !== 'undefined') {
+            console.log('MetaMask is installed!')
+        } else {
+            return
+        }
+
+        window.global = {}
+
+        window.global.web3 = new Web3(window.ethereum)
+
+        accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        window.global.account = accounts[0];
+
+        nft = await getNewContract("NFT.json")
+        window.global.factory = await getNewContract("TradingFloorFactory.json")
+
+        document.getElementById("createTradingFloor").addEventListener(
+            "click", 
+            createTradingFloor
+        )
+
+        // console.log(factory)
+    }
+
+    async function createTradingFloor() {
+
+        await window.global.factory.methods.createTradingFloor("VIT", "Vitality Floor", nft._address).send({from: window.global.account})
+
+        tradingFloorStruct = await window.global.factory.methods.Floors(0).call()
+        tradingFloorAddress = tradingFloorStruct.floor
+    }
+
+    async function getExistingContract(jsonFile) {
+        response = await fetch(jsonFile)
+        json = await response.json()
+        return new window.global.web3.eth.Contract(json.abi, json.networks["1645215691986"].address)
+    }
+
+    async function getNewContract(jsonFile) {
+        response = await fetch(jsonFile)
+        json = await response.json()
+        contract = await new window.global.web3.eth.Contract(json.abi)
+        return contract.deploy({
+            data: json.bytecode, 
+            arguments: ["VITNFT", "Vitality NFT"]
+        }).send({from: window.global.account})
+    }
+
+    window.onload = main
+
+</script>
+
+</body>
+</html> 

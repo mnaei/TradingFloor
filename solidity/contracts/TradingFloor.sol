@@ -49,3 +49,21 @@ contract TradingFloor is ERC20, IERC721Receiver {
     }
 
 }
+
+contract TradingFloorFactory {
+    Floor[] public Floors;
+
+    struct Floor {
+        address floor;
+        address nft;
+    }
+
+    function createTradingFloor(
+        string memory _name, 
+        string memory _symbol,
+        address _nft
+    ) external {
+        TradingFloor tf = new TradingFloor(_name, _symbol, _nft);
+        Floors.push(Floor(address(tf), _nft));
+    }
+}
